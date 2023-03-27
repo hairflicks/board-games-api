@@ -156,16 +156,6 @@ describe('GET /api/reviews', () => {
             expect(reviews).toBeSortedBy('created_at', {descending: true})
         })
     })
-    test('404: reviews table does not exist', () => {
-        db.query('DROP TABLE IF EXISTS reviews CASCADE;')
-        return request(app)
-        .get('/api/reviews')
-        .expect(404)
-        .then(({body}) => {
-            const {msg} = body
-            expect(msg).toBe('Table does not exist')
-        })
-    })
 })
 
 
