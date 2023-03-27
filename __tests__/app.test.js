@@ -32,13 +32,16 @@ describe('/api/categories', () => {
             })
         })
     })
+})
+
+describe('mistyped endpoint', () => {
     test('404: Responds with error message if endpoint is mistyped', () => {
         return request(app)
         .get('/api/categoris')
         .expect(404)
         .then(({res}) => {
-           const {statusMessage} = res
-           expect(statusMessage).toBe('Not Found')
+            const {statusMessage} = res
+            expect(statusMessage).toBe('Not Found')
         })
     })
 })

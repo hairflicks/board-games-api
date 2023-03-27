@@ -6,6 +6,9 @@ function getAllCategories(req, res, next) {
     .then((categories) => {
         res.status(200).send({categories})
     })
+    .catch(err => {
+        next(err)
+    })
 }
 
 module.exports = {getAllCategories}
