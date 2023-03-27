@@ -2,6 +2,7 @@ const request = require('supertest')
 const db = require('../db/connection')
 const app = require('../app')
 const testData = require('../db/data/test-data/index')
+const sorted = require('jest-sorted')
 const seed = require('../db/seeds/seed')
 
 beforeEach(() => {return seed(testData)});
@@ -100,6 +101,72 @@ describe('GET /api/reviews/:id', () => {
     })
 })
 
+
+describe('GET /api/reviews', () => {
+    test('200: should have length 13', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(13)
+        })
+    })
+    test('200: should have valid keys/values', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(13)
+            reviews.forEach(review => {
+                expect(review).toMatchObject({
+                   owner: expect.any(String),
+                   title: expect.any(String),
+                   review_id: expect.any(Number),
+                   category: expect.any(String),
+                   review_img_url: expect.any(String),
+                   created_at: expect.any(String),
+                   votes: expect.any(Number),
+                   designer: expect.any(String),
+                   comment_count: expect.any(String)
+                })
+            })
+        })
+    })
+    test('200: has correct comment count for the reviews', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(13)
+            expect(reviews[12].comment_count).toBe("0")
+            expect(reviews[11].comment_count).toBe("0")
+            expect(reviews[5].comment_count).toBe("3")
+            expect(reviews[1].comment_count).toBe("0")
+        })
+    })
+    test('200: sorted by date (descending)', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+    test('404: reviews table does not exist', () => {
+        db.query('DROP TABLE IF EXISTS reviews CASCADE;')
+        return request(app)
+        .get('/api/reviews')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Table does not exist')
+        })
+    })
+})
 
 
 
