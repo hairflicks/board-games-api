@@ -1,9 +1,6 @@
 const db = require('../db/connection')
 
 function fetchReviewById(id) {
-    if (!/^\d+$/.test(id)) {
-        return Promise.reject({status: 400, msg: `Invalid id request (${id})`})
-    } else {
     const params = [id]
     return db.query(
         `SELECT * FROM reviews 
@@ -16,7 +13,6 @@ function fetchReviewById(id) {
         return rows
         }
     })
-}
 }
 
 module.exports = {fetchReviewById}

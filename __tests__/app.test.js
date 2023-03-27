@@ -95,7 +95,7 @@ describe('GET /api/reviews/:id', () => {
         .expect(400)
         .then(({body}) => {
             const {msg} = body
-            expect(msg).toBe('Invalid id request (dog)')
+            expect(msg).toBe("Invalid request type")
         })
     })
 })
