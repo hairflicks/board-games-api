@@ -7,4 +7,7 @@ function fetchAllCategories() {
     })
 }
 
+
+
+
 module.exports = {fetchAllCategories}
