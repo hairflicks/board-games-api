@@ -22,7 +22,6 @@ function fetchAllReviews() {
     GROUP BY reviews.review_id
     ORDER BY reviews.created_at DESC`)
     .then(({rows}) => {
-         console.log(rows)
         return rows
     })
 }

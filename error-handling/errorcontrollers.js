@@ -8,7 +8,6 @@ function customErrors(err,req,res,next) {
 }
 
 function invalidInputTypeError(err,req,res,next) {
-    console.log(err.code)
     if (err.code === '22P02') {
         res.status(400).send({msg: 'Invalid request type'})
     }
@@ -16,7 +15,7 @@ function invalidInputTypeError(err,req,res,next) {
         res.status(404).send({msg:'Table does not exist'})
     }
     else if (err.code === '23503') {
-        res.status(404).send({msg: 'Review ID does not exist'})
+        res.status(404).send({msg: 'Entity does not exist in database'})
     }
     else next(err)
 }

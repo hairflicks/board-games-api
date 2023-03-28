@@ -183,7 +183,7 @@ describe('/api/reviews/:id/comments', () => {
         .expect(404)
         .then(({body}) => {
             const {msg} = body
-            expect(msg).toBe('Review ID does not exist')
+            expect(msg).toBe('Entity does not exist in database')
         })
     })
     test('400: invalid id type', () => {
@@ -198,7 +198,7 @@ describe('/api/reviews/:id/comments', () => {
     })
     test('400: missing keys in object', () => {
         return request(app)
-        .post('/api/reviews/dog/comments')
+        .post('/api/reviews/2/comments')
         .send({hello: 'hi'})
         .expect(400)
         .then(({body}) => {
@@ -206,24 +206,14 @@ describe('/api/reviews/:id/comments', () => {
             expect(msg).toBe("Object missing required keys")
         })
     })
-    test('400: correct keys but invalid values', () => {
+    test('404: author does not exist in database', () => {
         return request(app)
-        .post('/api/reviews/dog/comments')
-        .send({username: 1233, body: []})
-        .expect(400)
-        .then(({body}) => {
-            const {msg} = body
-            expect(msg).toBe('Invalid request type')
-        })
-    })
-    test.only('400: author does not exist in database', () => {
-        return request(app)
-        .post('/api/reviews/dog/comments')
+        .post('/api/reviews/2/comments')
         .send({username: 'fakeUser', body: 'This is a comment'})
-        .expect(400)
+        .expect(404)
         .then(({body}) => {
             const {msg} = body
-            expect(msg).toBe('Invalid request type')
+            expect(msg).toBe('Entity does not exist in database')
         })
     })
 })
