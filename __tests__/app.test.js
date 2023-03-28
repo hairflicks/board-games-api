@@ -159,7 +159,7 @@ describe('GET /api/reviews', () => {
 })
 
 
-describe('/api/reviews/:id/comments', () => {
+describe('POST /api/reviews/:id/comments', () => {
     test('201: Responds with comment posted', () => {
         return request(app)
         .post('/api/reviews/2/comments')
@@ -215,6 +215,9 @@ describe('/api/reviews/:id/comments', () => {
         .then(({body}) => {
             const {msg} = body
             expect(msg).toBe('Entity does not exist in database')
+        })
+    })
+})
 
 describe('GET /api/reviews/:id/comments', () => {
     test('200: should have correct keys/values and length', () => {
@@ -242,7 +245,6 @@ describe('GET /api/reviews/:id/comments', () => {
         .expect(200)
         .then(({body}) => {
             const {comments} = body
-            console.log(comments)
             expect(comments.length).toBe(3)
             expect(comments).toBeSortedBy('created_at', {descending: true})
         })
@@ -276,7 +278,122 @@ describe('GET /api/reviews/:id/comments', () => {
     })
 })
 
+describe('PATCH /api/reviews/:id', () => {
+    test('200: responds with updated review with votes incremented by 1', () => {
+        return request(app)
+        .patch('/api/reviews/2')
+        .send({inc_votes: 1})
+        .expect(200)
+        .then(({body}) => {
+            const {updatedReview} = body
+            expect(updatedReview).toMatchObject({
+                    review_id: 2,
+                    title: 'Jenga',
+                    designer: 'Leslie Scott',
+                    owner: 'philippaclaire9',
+                    review_img_url:
+                      'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
+                    review_body: 'Fiddly fun for all the family',
+                    category: 'dexterity',
+                    created_at: "2021-01-18T10:01:41.251Z",
+                    votes: 6
+            })
+        })
+    })
+    test('200: responds with updated review with votes incremented by any amount', () => {
+        return request(app)
+        .patch('/api/reviews/2')
+        .send({inc_votes: 150})
+        .expect(200)
+        .then(({body}) => {
+            const {updatedReview} = body
+            expect(updatedReview).toMatchObject({
+                    review_id: 2,
+                    title: 'Jenga',
+                    designer: 'Leslie Scott',
+                    owner: 'philippaclaire9',
+                    review_img_url:
+                      'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
+                    review_body: 'Fiddly fun for all the family',
+                    category: 'dexterity',
+                    created_at: "2021-01-18T10:01:41.251Z",
+                    votes: 155
+            })
+        })
+    })
+    test('200: responds with updated review with votes incremented by a negative amount', () => {
+        return request(app)
+        .patch('/api/reviews/2')
+        .send({inc_votes: -25})
+        .expect(200)
+        .then(({body}) => {
+            const {updatedReview} = body
+            expect(updatedReview).toMatchObject({
+                    review_id: 2,
+                    title: 'Jenga',
+                    designer: 'Leslie Scott',
+                    owner: 'philippaclaire9',
+                    review_img_url:
+                      'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
+                    review_body: 'Fiddly fun for all the family',
+                    category: 'dexterity',
+                    created_at: "2021-01-18T10:01:41.251Z",
+                    votes: -20
+            })
+        })
+    })
+    test('400: invalid object keys', () => {
+        return request(app)
+        .patch('/api/reviews/2')
+        .send({hi: 'hello'})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Please provide inc_votes key')
+        })
+    })
+    test('400: invalid count type', () => {
+        return request(app)
+        .patch('/api/reviews/2')
+        .send({inc_votes: 'hello'})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid request type')
+        })
+    })
+    test('404: review_id is valid but does not exist', () => {
+        return request(app)
+        .patch('/api/reviews/500')
+        .send({inc_votes: 2})
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Review_id does not exist')
+        })
+    })
+    test('400: valid and invalid keys on object', () => {
+        return request(app)
+        .patch('/api/reviews/2')
+        .send({inc_votes: 2, hello: 'hi'})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Too many keys on object')
+        })
+    })
+    test('400: review_id is invalid', () => {
+        return request(app)
+        .patch('/api/reviews/dog')
+        .send({inc_votes: 2})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid request type')
+        })
+    })
 
+})
 
 
 describe('mistyped endpoint', () => {
