@@ -1,7 +1,7 @@
 const {getAllCategories} = require('./controllers/categories.controllers')
 const {getReviewById, getAllReviews, postCommentByReviewId} = require('./controllers/reviews.controllers')
 const express = require('express')
-const {serverError,customErrors,invalidInputTypeError} = require('./error-handling/errorhandling')
+const {serverError,customErrors,invalidInputTypeError} = require('./error-handling/errorcontrollers')
 
 const app = express()
 
