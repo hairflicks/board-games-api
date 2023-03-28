@@ -187,6 +187,17 @@ describe('GET /api/reviews/:id/comments', () => {
             })
         })
     })
+    test('200: Is sorted in order of most recent comment', () => {
+        return request(app)
+        .get('/api/reviews/2/comments')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body
+            console.log(comments)
+            expect(comments.length).toBe(3)
+            expect(comments).toBeSortedBy('created_at', {descending: true})
+        })
+    })
     test('404: id is correct type but does not exist', () => {
         return request(app)
         .get('/api/reviews/564/comments')

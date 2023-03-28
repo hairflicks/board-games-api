@@ -29,7 +29,8 @@ function fetchAllReviews() {
 
 function fetchCommentByReviewId(id) {
     return db.query(`SELECT * FROM comments 
-                    WHERE review_id = $1`, [id])
+                    WHERE review_id = $1
+                    ORDER BY created_at desc`, [id])
     .then((comments) => {
         return comments.rows
     })
