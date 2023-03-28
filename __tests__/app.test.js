@@ -159,16 +159,7 @@ describe('GET /api/reviews', () => {
 })
 
 describe('GET /api/reviews/:id/comments', () => {
-    test('200: should have correct length', () => {
-        return request(app)
-        .get('/api/reviews/2/comments')
-        .expect(200)
-        .then(({body}) => {
-            const {comments} = body
-            expect(comments.length).toBe(3)
-        })
-    })
-    test('200: should have correct keys/values', () => {
+    test('200: should have correct keys/values and length', () => {
         return request(app)
         .get('/api/reviews/2/comments')
         .expect(200)
@@ -222,7 +213,7 @@ describe('GET /api/reviews/:id/comments', () => {
         .expect(200)
         .then(({body}) => {
             const {msg} = body
-            console.log(msg)
+            expect(msg).toBe('No comments for this review')
         })
     })
 })

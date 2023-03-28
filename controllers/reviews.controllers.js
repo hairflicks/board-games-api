@@ -24,7 +24,11 @@ function getCommentsByReviewId(req, res, next) {
     Promise.all(promises)
     .then(commentList => {
         const comments = commentList[1]
+        if (comments.length === 0) {
+            return Promise.reject({status:200, msg: 'No comments for this review'})
+        } else {
         res.status(200).send({comments})
+        }
     })
     .catch(next)
 }
