@@ -22,9 +22,26 @@ function fetchAllReviews() {
     GROUP BY reviews.review_id
     ORDER BY reviews.created_at DESC`)
     .then(({rows}) => {
-         console.log(rows)
         return rows
     })
+}
+
+
+function placeCommentByReviewId(id, comment) {
+    const author = comment.username
+    const body = comment.body
+    const params = [id, author, body]
+    if (author && body) {
+    return db.query(`INSERT INTO comments (review_id, author, body)
+                    VALUES ($1,
+                            $2,
+                            $3)
+                            RETURNING *`, params)
+    .then((values) => {
+    return values.rows[0]})
+    } else {
+        return Promise.reject({status: 400, msg: 'Object missing required keys'})
+    }
 }
 
 function fetchCommentByReviewId(id) {
@@ -36,4 +53,5 @@ function fetchCommentByReviewId(id) {
     })
 }
 
-module.exports = {fetchReviewById, fetchAllReviews, fetchCommentByReviewId}
+module.exports = {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId}
+

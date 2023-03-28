@@ -158,6 +158,64 @@ describe('GET /api/reviews', () => {
     })
 })
 
+
+describe('/api/reviews/:id/comments', () => {
+    test('201: Responds with comment posted', () => {
+        return request(app)
+        .post('/api/reviews/2/comments')
+        .send({username: 'dav3rid', body: 'This is a comment'})
+        .expect(201)
+        .then(({body}) => {
+            const {addedComment} = body
+            expect(addedComment).toMatchObject({
+                comment_id: expect.any(Number),
+                body: 'This is a comment',
+                review_id: 2,
+                author: 'dav3rid',
+                votes: 0,
+                created_at: expect.any(String),
+            })
+        })
+    })
+    test('404: review id does not exist', () => {
+        return request(app)
+        .post('/api/reviews/126/comments')
+        .send({username: 'dav3rid', body: 'This is a comment'})
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Entity does not exist in database')
+        })
+    })
+    test('400: invalid id type', () => {
+        return request(app)
+        .post('/api/reviews/dog/comments')
+        .send({username: 'dav3rid', body: 'This is a comment'})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe("Invalid request type")
+        })
+    })
+    test('400: missing keys in object', () => {
+        return request(app)
+        .post('/api/reviews/2/comments')
+        .send({hello: 'hi'})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe("Object missing required keys")
+        })
+    })
+    test('404: author does not exist in database', () => {
+        return request(app)
+        .post('/api/reviews/2/comments')
+        .send({username: 'fakeUser', body: 'This is a comment'})
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Entity does not exist in database')
+
 describe('GET /api/reviews/:id/comments', () => {
     test('200: should have correct keys/values and length', () => {
         return request(app)
