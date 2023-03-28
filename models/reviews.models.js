@@ -38,7 +38,7 @@ function placeCommentByReviewId(id, comment) {
                             $3)
                             RETURNING *`, params)
     .then((values) => {
-    return values})
+    return values.rows[0]})
     } else {
         return Promise.reject({status: 400, msg: 'Object missing required keys'})
     }

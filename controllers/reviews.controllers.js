@@ -21,9 +21,7 @@ function postCommentByReviewId(req, res, next) {
     const id = req.params.id
     const comment = req.body
     placeCommentByReviewId(id, comment)
-    .then(values => {
-        const addedComment = values.rows
-        console.log(addedComment)
+    .then(addedComment => {
         res.status(201).send({addedComment})
     })
     .catch(next)

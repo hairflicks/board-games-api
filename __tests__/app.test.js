@@ -166,13 +166,12 @@ describe('/api/reviews/:id/comments', () => {
         .expect(201)
         .then(({body}) => {
             const {addedComment} = body
-            expect(addedComment.length).toBe(1)
-            expect(addedComment[0]).toMatchObject({
+            expect(addedComment).toMatchObject({
                 comment_id: expect.any(Number),
                 body: 'This is a comment',
                 review_id: 2,
                 author: 'dav3rid',
-                votes: expect.any(Number),
+                votes: 0,
                 created_at: expect.any(String),
             })
         })
@@ -211,6 +210,16 @@ describe('/api/reviews/:id/comments', () => {
         return request(app)
         .post('/api/reviews/dog/comments')
         .send({username: 1233, body: []})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid request type')
+        })
+    })
+    test.only('400: author does not exist in database', () => {
+        return request(app)
+        .post('/api/reviews/dog/comments')
+        .send({username: 'fakeUser', body: 'This is a comment'})
         .expect(400)
         .then(({body}) => {
             const {msg} = body
