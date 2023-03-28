@@ -158,7 +158,66 @@ describe('GET /api/reviews', () => {
     })
 })
 
-
+describe('/api/reviews/:id/comments', () => {
+    test('201: Responds with comment posted', () => {
+        return request(app)
+        .post('/api/reviews/2/comments')
+        .send({username: 'dav3rid', body: 'This is a comment'})
+        .expect(201)
+        .then(({body}) => {
+            const {addedComment} = body
+            expect(addedComment.length).toBe(1)
+            expect(addedComment[0]).toMatchObject({
+                comment_id: expect.any(Number),
+                body: 'This is a comment',
+                review_id: 2,
+                author: 'dav3rid',
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+            })
+        })
+    })
+    test('404: review id does not exist', () => {
+        return request(app)
+        .post('/api/reviews/126/comments')
+        .send({username: 'dav3rid', body: 'This is a comment'})
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Review ID does not exist')
+        })
+    })
+    test('400: invalid id type', () => {
+        return request(app)
+        .post('/api/reviews/dog/comments')
+        .send({username: 'dav3rid', body: 'This is a comment'})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe("Invalid request type")
+        })
+    })
+    test('400: missing keys in object', () => {
+        return request(app)
+        .post('/api/reviews/dog/comments')
+        .send({hello: 'hi'})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe("Object missing required keys")
+        })
+    })
+    test('400: correct keys but invalid values', () => {
+        return request(app)
+        .post('/api/reviews/dog/comments')
+        .send({username: 1233, body: []})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid request type')
+        })
+    })
+})
 
 
 

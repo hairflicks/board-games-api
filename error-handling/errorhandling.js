@@ -15,8 +15,12 @@ function invalidInputTypeError(err,req,res,next) {
     else if (err.code === '42P01') {
         res.status(404).send({msg:'Table does not exist'})
     }
+    else if (err.code === '23503') {
+        res.status(404).send({msg: 'Review ID does not exist'})
+    }
     else next(err)
 }
+
 function serverError(err,req,res,next) {
     console.log(err)
     res.status(500).send({msg: 'Internal Server Error'})
