@@ -158,6 +158,7 @@ describe('GET /api/reviews', () => {
     })
 })
 
+
 describe('/api/reviews/:id/comments', () => {
     test('201: Responds with comment posted', () => {
         return request(app)
@@ -214,6 +215,63 @@ describe('/api/reviews/:id/comments', () => {
         .then(({body}) => {
             const {msg} = body
             expect(msg).toBe('Entity does not exist in database')
+
+describe('GET /api/reviews/:id/comments', () => {
+    test('200: should have correct keys/values and length', () => {
+        return request(app)
+        .get('/api/reviews/2/comments')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body
+            expect(comments.length).toBe(3)
+            comments.forEach(comment => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    review_id: 2
+                })
+            })
+        })
+    })
+    test('200: Is sorted in order of most recent comment', () => {
+        return request(app)
+        .get('/api/reviews/2/comments')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body
+            console.log(comments)
+            expect(comments.length).toBe(3)
+            expect(comments).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+    test('404: id is correct type but does not exist', () => {
+        return request(app)
+        .get('/api/reviews/564/comments')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Review id does not exist')
+        })
+    })
+    test('400: id is incorrect type', () => {
+        return request(app)
+        .get('/api/reviews/dog/comments')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid request type')
+        })
+    })
+    test('200: id exists but has no comments', () => {
+        return request(app)
+        .get('/api/reviews/1/comments')
+        .expect(200)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('No comments for this review')
         })
     })
 })

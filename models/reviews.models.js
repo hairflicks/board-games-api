@@ -26,6 +26,7 @@ function fetchAllReviews() {
     })
 }
 
+
 function placeCommentByReviewId(id, comment) {
     const author = comment.username
     const body = comment.body
@@ -43,4 +44,14 @@ function placeCommentByReviewId(id, comment) {
     }
 }
 
-module.exports = {fetchReviewById, fetchAllReviews, placeCommentByReviewId}
+function fetchCommentByReviewId(id) {
+    return db.query(`SELECT * FROM comments 
+                    WHERE review_id = $1
+                    ORDER BY created_at desc`, [id])
+    .then((comments) => {
+        return comments.rows
+    })
+}
+
+module.exports = {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId}
+

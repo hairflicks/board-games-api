@@ -3,11 +3,12 @@ const express = require('express')
 
 function customErrors(err,req,res,next) {
     if (err.status && err.msg) {
+
     res.status(err.status).send({msg: err.msg})
     } else next(err)
 }
 
-function invalidInputTypeError(err,req,res,next) {
+function psqlErrors(err,req,res,next) {
     if (err.code === '22P02') {
         res.status(400).send({msg: 'Invalid request type'})
     }
@@ -25,4 +26,6 @@ function serverError(err,req,res,next) {
     res.status(500).send({msg: 'Internal Server Error'})
 }
 
-module.exports = {serverError, customErrors, invalidInputTypeError}
+
+module.exports = {serverError, customErrors, psqlErrors}
+
