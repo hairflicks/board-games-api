@@ -8,7 +8,7 @@ function checkEntityExists(table, column, value) {
     return db.query(sql, [value])
     .then((values) => {
         if(values.rowCount === 0) {
-            return Promise.reject({status: 404, msg: 'Review id does not exist'})
+            return Promise.reject({status: 404, msg: `${value} does not exist`})
         }
     })
 }

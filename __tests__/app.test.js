@@ -255,7 +255,7 @@ describe('GET /api/reviews/:id/comments', () => {
         .expect(404)
         .then(({body}) => {
             const {msg} = body
-            expect(msg).toBe('Review id does not exist')
+            expect(msg).toBe('564 does not exist')
         })
     })
     test('400: id is incorrect type', () => {
@@ -403,15 +403,15 @@ describe('PATCH /api/reviews/:id', () => {
             expect(msg).toBe('Invalid request type')
         })
     })
-
+})
 
 describe('DELETE /api/comments/:id', () => {
-    test.only('204: Responds with 204 no content', () => {
+    test('204: Responds with 204 no content', () => {
         return request(app)
         .delete('/api/comments/2')
         .expect(204)
     })
-    test.only('404: Comment id is valid but does not exist', () => {
+    test('404: Comment id is valid but does not exist', () => {
         return request(app)
         .delete('/api/comments/999')
         .expect(404)
@@ -420,7 +420,7 @@ describe('DELETE /api/comments/:id', () => {
             expect(msg).toBe('Comment ID does not exist')
         })
     })
-    test.only('400: Comment id is invalid', () => {
+    test('400: Comment id is invalid', () => {
         return request(app)
         .delete('/api/comments/dog')
         .expect(400)
@@ -433,38 +433,8 @@ describe('DELETE /api/comments/:id', () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 describe('GET /api/users', () => {
-    test.only('200:Responds with correct length and key/values', () => {
+    test('200:Responds with correct length and key/values', () => {
         return request(app)
         .get('/api/users')
         .expect(200)
@@ -482,6 +452,95 @@ describe('GET /api/users', () => {
     })
 })
 
+describe('QUERIES /api/reviews', () => {
+    test('200: Responds with reviews only of category queried', () => {
+        return request(app)
+        .get('/api/reviews?category=social_deduction')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(11)
+        })
+    })
+    test('200: Responds with correct sort_by query', () => {
+        return request(app)
+        .get('/api/reviews?sort_by=votes')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            console.log(reviews)
+            expect(reviews.length).toBe(13)
+            expect(reviews).toBeSortedBy('votes', {descending: true})
+        })
+    })
+    test('200: orders by order query ASC', () => {
+        return request(app)
+        .get('/api/reviews?order=asc')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(13)
+            expect(reviews).toBeSortedBy('created_at')
+        })
+    })
+    test('200: Responds with correct order and sort_by query', () => {
+        return request(app)
+        .get('/api/reviews?order=asc&sort_by=designer')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(13)
+            expect(reviews).toBeSortedBy('designer')
+        })
+    })
+    test('200: Responds with correct order and category', () => {
+        return request(app)
+        .get('/api/reviews?order=asc&category=social_deduction')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(11)
+            expect(reviews).toBeSortedBy('created_at')
+        })
+    })
+    test('200: Responds with correct query using all queries', () => {
+        return request(app)
+        .get('/api/reviews?order=desc&category=social_deduction&sort_by=votes')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(11)
+            expect(reviews).toBeSortedBy('votes', {descending: true})
+        })
+    })
+    test('400: Incorrect order query', () => {
+        return request(app)
+        .get('/api/reviews?order=sheep')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid order query')
+        })
+    })
+    test('400: Incorrect sort_by query', () => {
+        return request(app)
+        .get('/api/reviews?sort_by=dog')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid sort_by query')
+        })
+    })
+    test('400: Incorrect category query', () => {
+        return request(app)
+        .get('/api/reviews?category=moon_cheese')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid order query')
+        })
+    })
+})
 
 
 
