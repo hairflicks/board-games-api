@@ -285,8 +285,8 @@ describe('PATCH /api/reviews/:id', () => {
         .send({inc_votes: 1})
         .expect(200)
         .then(({body}) => {
-            const {updatedReview} = body
-            expect(updatedReview).toMatchObject({
+            const {review} = body
+            expect(review).toMatchObject({
                     review_id: 2,
                     title: 'Jenga',
                     designer: 'Leslie Scott',
@@ -306,8 +306,8 @@ describe('PATCH /api/reviews/:id', () => {
         .send({inc_votes: 150})
         .expect(200)
         .then(({body}) => {
-            const {updatedReview} = body
-            expect(updatedReview).toMatchObject({
+            const {review} = body
+            expect(review).toMatchObject({
                     review_id: 2,
                     title: 'Jenga',
                     designer: 'Leslie Scott',
@@ -327,8 +327,8 @@ describe('PATCH /api/reviews/:id', () => {
         .send({inc_votes: -25})
         .expect(200)
         .then(({body}) => {
-            const {updatedReview} = body
-            expect(updatedReview).toMatchObject({
+            const {review} = body
+            expect(review).toMatchObject({
                     review_id: 2,
                     title: 'Jenga',
                     designer: 'Leslie Scott',
@@ -372,14 +372,25 @@ describe('PATCH /api/reviews/:id', () => {
             expect(msg).toBe('Review_id does not exist')
         })
     })
-    test('400: valid and invalid keys on object', () => {
+    test('200: Still works with more keys on object', () => {
         return request(app)
         .patch('/api/reviews/2')
         .send({inc_votes: 2, hello: 'hi'})
-        .expect(400)
+        .expect(200)
         .then(({body}) => {
-            const {msg} = body
-            expect(msg).toBe('Too many keys on object')
+            const {review} = body
+            expect(review).toMatchObject({
+                    review_id: 2,
+                    title: 'Jenga',
+                    designer: 'Leslie Scott',
+                    owner: 'philippaclaire9',
+                    review_img_url:
+                      'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
+                    review_body: 'Fiddly fun for all the family',
+                    category: 'dexterity',
+                    created_at: "2021-01-18T10:01:41.251Z",
+                    votes: 7
+            })
         })
     })
     test('400: review_id is invalid', () => {

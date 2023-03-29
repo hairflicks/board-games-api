@@ -57,16 +57,12 @@ function fetchCommentByReviewId(id) {
     })
 }
 
-function updateReviewLikes(id, body) {
-    if (Object.keys(body).length > 1) {
-            return Promise.reject({status:400, msg: 'Too many keys on object'})
-    }
-    const {inc_votes} = body
-    if (inc_votes) {
+function updateReviewLikes(id, count) {
+    if (count) {
     return db.query(`UPDATE reviews
                     SET votes = votes + $2
                     WHERE review_id = $1
-                    RETURNING *`, [id,inc_votes])
+                    RETURNING *`, [id,count])
     .then((result) => {
         if (result.rows.length === 0) {
             return Promise.reject({status: 404, msg: 'Review_id does not exist'})

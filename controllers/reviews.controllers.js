@@ -46,10 +46,10 @@ function getCommentsByReviewId(req, res, next) {
 
 function patchReviewLikes(req, res, next) {
     const id = req.params.id
-    const body = req.body
-    updateReviewLikes(id, body)
-    .then((updatedReview) => {
-        res.status(200).send({updatedReview})
+    const count = req.body.inc_votes
+    updateReviewLikes(id, count)
+    .then((review) => {
+        res.status(200).send({review})
     })
     .catch(next)
 }
