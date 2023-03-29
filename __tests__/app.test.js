@@ -434,6 +434,58 @@ describe('DELETE /api/comments/:id', () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+describe('GET /api/users', () => {
+    test.only('200:Responds with correct length and key/values', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            const {users} = body
+            expect(users.length).toBe(4)
+            users.forEach(user => {
+                expect(user).toMatchObject({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url: expect.any(String)
+                })
+            })
+        })
+    })
+})
+
+
+
+
+
 describe('mistyped endpoint', () => {
     test('404: Responds with error message if endpoint is mistyped', () => {
         return request(app)
