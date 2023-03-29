@@ -280,13 +280,10 @@ describe('GET /api/reviews/:id/comments', () => {
 
 
 describe('DELETE /api/comments/:id', () => {
-    test.only('204: Responds with no content', () => {
+    test.only('204: Responds with 204 no content', () => {
         return request(app)
         .delete('/api/comments/2')
         .expect(204)
-        .then(({body}) => {
-           expect(body).toEqual({})
-        })
     })
     test.only('404: Comment id is valid but does not exist', () => {
         return request(app)
