@@ -49,9 +49,31 @@ function fetchCommentByReviewId(id) {
                     WHERE review_id = $1
                     ORDER BY created_at desc`, [id])
     .then((comments) => {
+        if (comments.rows.length === 0) {
+            return Promise.reject({status:200, msg: 'No comments for this review'})
+        } else {
         return comments.rows
+        }
     })
 }
 
-module.exports = {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId}
+function updateReviewLikes(id, count) {
+    if (count) {
+    return db.query(`UPDATE reviews
+                    SET votes = votes + $2
+                    WHERE review_id = $1
+                    RETURNING *`, [id,count])
+    .then((result) => {
+        if (result.rows.length === 0) {
+            return Promise.reject({status: 404, msg: 'Review_id does not exist'})
+        } else {
+            return result.rows[0]
+        }
+    })
+    } else {
+        return Promise.reject({status: 400, msg: 'Please provide inc_votes key'})
+    }
+}
+
+module.exports = {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId, updateReviewLikes}
 
