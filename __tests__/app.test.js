@@ -215,6 +215,9 @@ describe('/api/reviews/:id/comments', () => {
         .then(({body}) => {
             const {msg} = body
             expect(msg).toBe('Entity does not exist in database')
+        })
+    })
+})
 
 describe('GET /api/reviews/:id/comments', () => {
     test('200: should have correct keys/values and length', () => {
@@ -275,6 +278,58 @@ describe('GET /api/reviews/:id/comments', () => {
         })
     })
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+describe('GET /api/users', () => {
+    test.only('200:Responds with correct length and key/values', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            const {users} = body
+            expect(users.length).toBe(4)
+            users.forEach(user => {
+                expect(user).toMatchObject({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url: expect.any(String)
+                })
+            })
+        })
+    })
+})
+
 
 
 
