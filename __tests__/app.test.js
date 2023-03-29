@@ -215,6 +215,9 @@ describe('/api/reviews/:id/comments', () => {
         .then(({body}) => {
             const {msg} = body
             expect(msg).toBe('Entity does not exist in database')
+        })
+    })
+})
 
 describe('GET /api/reviews/:id/comments', () => {
     test('200: should have correct keys/values and length', () => {
@@ -242,7 +245,6 @@ describe('GET /api/reviews/:id/comments', () => {
         .expect(200)
         .then(({body}) => {
             const {comments} = body
-            console.log(comments)
             expect(comments.length).toBe(3)
             expect(comments).toBeSortedBy('created_at', {descending: true})
         })
@@ -276,6 +278,35 @@ describe('GET /api/reviews/:id/comments', () => {
     })
 })
 
+
+describe('DELETE /api/comments/:id', () => {
+    test.only('204: Responds with no content', () => {
+        return request(app)
+        .delete('/api/comments/2')
+        .expect(204)
+        .then(({body}) => {
+           expect(body).toEqual({})
+        })
+    })
+    test.only('404: Comment id is valid but does not exist', () => {
+        return request(app)
+        .delete('/api/comments/999')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Comment ID does not exist')
+        })
+    })
+    test.only('400: Comment id is invalid', () => {
+        return request(app)
+        .delete('/api/comments/dog')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid request type')
+        })
+    })
+})
 
 
 
