@@ -70,8 +70,8 @@ const endpoints = {
     "description": "posts a new comment to the corresponding review id",
     "queries": [],
     "exampleRequest": {
-      username: "beeblebob",
-      body: "This review offends me"
+      "username": "beeblebob",
+      "body": "This review offends me"
     },
     "exampleResponse": {
       "comment": [
@@ -90,7 +90,7 @@ const endpoints = {
     "description": "Updates the votes on the corresponding review id by the amount given",
     "queries": [],
     "exampleRequest": {
-      inc_votes: 5
+      "inc_votes": 5
     },
     "exampleResponse":  {
       "review": [
@@ -114,13 +114,28 @@ const endpoints = {
   "GET /api/users": {
     "description": "Returns an array of all the users",
     "queries": [],
-    exampleResponse: [
+    "exampleResponse": [
       {
-        username: "beeblebob",
-        name: "Steve",
-        avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4'
+        "username": "beeblebob",
+        "name": "Steve",
+        "avatar_url": 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4'
       }
     ]
+  },
+  "PATCH /api/comments/:id": {
+    "description": "Updates the votes on the corresponding comment id given",
+    "queries": [],
+    "exampleRequest": {
+      "inc_votes": 2
+    },
+    "exampleResponse": {
+      comment_id: 3,
+      body: "I didn't know dogs could play games",
+      votes: 160,
+      author: 'philippaclaire9',
+      review_id: 3,
+      created_at: "2021-01-18T10:09:48.110Z",
+    }
   }
 }
 
