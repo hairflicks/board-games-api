@@ -57,11 +57,7 @@ function fetchAllReviews(queries) {
     const promises = [db.query(sql, params), checkEntityExists('categories', 'slug', params[0])]
     return Promise.all(promises)
     .then((reviews) => {
-        if (reviews[0].rows.length === 0){
-            return Promise.reject({status:404, msg: 'No reviews for this category exist'})
-        } else {
         return reviews[0].rows
-        }
     })
 }
 

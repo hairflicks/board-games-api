@@ -460,6 +460,10 @@ describe('QUERIES /api/reviews', () => {
         .then(({body}) => {
             const {reviews} = body
             expect(reviews.length).toBe(11)
+            expect(reviews).toBeSortedBy('created_at', {descending: true})
+            reviews.forEach(review => {
+                expect(review.category).toBe('social deduction')
+            })
         })
     })
     test('200: Responds with correct sort_by query', () => {
@@ -539,13 +543,13 @@ describe('QUERIES /api/reviews', () => {
             expect(msg).toBe('moon cheese does not exist')
         })
     })
-    test('404: Category exists but no results', () => {
+    test('200: Category exists but no results returns empty array', () => {
         return request(app)
         .get(`/api/reviews?category=children's_games`)
-        .expect(404)
+        .expect(200)
         .then(({body}) => {
-            const {msg} = body
-            expect(msg).toBe('No reviews for this category exist')
+            const {reviews} = body
+            expect(reviews).toEqual([])
                 })
     })
 })
