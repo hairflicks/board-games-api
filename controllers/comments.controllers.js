@@ -1,4 +1,4 @@
-const { removeCommentById } = require('../models/comments.model')
+const { removeCommentById, updateCommentVotes } = require('../models/comments.model')
 
 function deleteCommentById(req, res, next) {
     const id = req.params.id
@@ -11,4 +11,15 @@ function deleteCommentById(req, res, next) {
     })
 }
 
-module.exports = { deleteCommentById }
+function patchCommentVotes(req, res, next) {
+    const id = req.params.id
+    const count = req.body.inc_votes
+    updateCommentVotes(id, count)
+    .then(comment => {
+        console.log(comment)
+        res.status(200).send({comment})
+    })
+    .catch(next)
+}
+
+module.exports = { deleteCommentById, patchCommentVotes }
