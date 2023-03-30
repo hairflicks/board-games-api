@@ -4,6 +4,7 @@ const app = require('../app')
 const testData = require('../db/data/test-data/index')
 const sorted = require('jest-sorted')
 const seed = require('../db/seeds/seed')
+const endpoints = require('../endpoints')
 
 beforeEach(() => {return seed(testData)});
 afterAll(() => {db.end()});
@@ -556,7 +557,16 @@ describe('QUERIES /api/reviews', () => {
     })
 })
 
-
+describe('GET /api', () => {
+    test('responds with object detailing all endpoints', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body}) => {
+            expect(body).toEqual(endpoints)
+        })
+    })
+})
 
 
 describe('mistyped endpoint', () => {
