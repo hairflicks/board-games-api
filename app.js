@@ -1,10 +1,6 @@
-const {getAllCategories} = require('./controllers/categories.controllers')
 const endpoints = require('./endpoints')
-const {getReviewById, getAllReviews, getCommentsByReviewId, postCommentByReviewId, patchReviewLikes} = require('./controllers/reviews.controllers')
 const express = require('express')
 const {serverError,customErrors,psqlErrors} = require('./error-handling/errorcontrollers')
-const getAllUsers = require('./controllers/users.controllers')
-const { deleteCommentById } = require('./controllers/comments.controllers')
 const { categoriesRouter, commentsRouter, reviewsRouter, usersRouter } = require('./routers/index.js')
 
 const app = express()
@@ -16,15 +12,12 @@ app.get('/api', (req,res) => {
 })
 
 app.use('/api/categories', categoriesRouter)
-// app.get('/api/reviews/:id', getReviewById)
-// app.get('/api/reviews', getAllReviews)
-// app.post('/api/reviews/:id/comments', postCommentByReviewId)
-// app.get('/api/reviews/:id/comments', getCommentsByReviewId)
-app.get('/api/users', getAllUsers)
-// app.patch('/api/reviews/:id', patchReviewLikes)
+
+app.use('/api/users', usersRouter)
+
 app.use('/api/reviews', reviewsRouter)
 
-app.delete('/api/comments/:id', deleteCommentById)
+app.use('/api/comments', commentsRouter)
 
 app.use(customErrors)
 app.use(psqlErrors)

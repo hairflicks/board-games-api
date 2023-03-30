@@ -4,4 +4,4 @@ const {getAllCategories} = require('../controllers/categories.controllers')
 
 router.get('/', getAllCategories)
 
-module.exports = {router}
+module.exports = router
