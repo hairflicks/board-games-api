@@ -53,7 +53,8 @@ describe('GET /api/reviews/:id', () => {
                     review_body: expect.any(String),
                     category: expect.any(String),
                     created_at: expect.any(String),
-                    votes: expect.any(Number)
+                    votes: expect.any(Number),
+                    comment_count: "3"
                 })
             })
         })
@@ -76,7 +77,8 @@ describe('GET /api/reviews/:id', () => {
                       'Consequat velit occaecat voluptate do. Dolor pariatur fugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat et adipisicing laborum do. Sint sit tempor officia pariatur duis ullamco labore ipsum nisi voluptate nulla eu veniam. Et do ad id dolore id cillum non non culpa. Cillum mollit dolor dolore excepteur aliquip. Cillum aliquip quis aute enim anim ex laborum officia. Aliqua magna elit reprehenderit Lorem elit non laboris irure qui aliquip ad proident. Qui enim mollit Lorem labore eiusmod',
                     category: 'social deduction',
                     created_at: "2021-01-22T11:35:50.936Z",
-                    votes: 7
+                    votes: 7,
+                    comment_count: '0'
                   })
             })
         })
