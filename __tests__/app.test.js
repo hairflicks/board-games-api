@@ -403,15 +403,15 @@ describe('PATCH /api/reviews/:id', () => {
             expect(msg).toBe('Invalid request type')
         })
     })
-
+})
 
 describe('DELETE /api/comments/:id', () => {
-    test.only('204: Responds with 204 no content', () => {
+    test('204: Responds with 204 no content', () => {
         return request(app)
         .delete('/api/comments/2')
         .expect(204)
     })
-    test.only('404: Comment id is valid but does not exist', () => {
+    test('404: Comment id is valid but does not exist', () => {
         return request(app)
         .delete('/api/comments/999')
         .expect(404)
@@ -420,7 +420,7 @@ describe('DELETE /api/comments/:id', () => {
             expect(msg).toBe('Comment ID does not exist')
         })
     })
-    test.only('400: Comment id is invalid', () => {
+    test('400: Comment id is invalid', () => {
         return request(app)
         .delete('/api/comments/dog')
         .expect(400)
@@ -464,7 +464,7 @@ describe('DELETE /api/comments/:id', () => {
 
 
 describe('GET /api/users', () => {
-    test.only('200:Responds with correct length and key/values', () => {
+    test('200:Responds with correct length and key/values', () => {
         return request(app)
         .get('/api/users')
         .expect(200)
