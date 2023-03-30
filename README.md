@@ -9,14 +9,14 @@ This project aims to host a working board game api using node, express and psql.
 
 ## setup
 
-To clone this repo click the green code button in the top left and copy the url then go to your terminal and type "git clone <url>" in the directory of your choosing.
+To clone this repo click the green code button in the top left and copy the url then go to your terminal and type ```git clone <url>``` in the directory of your choosing.
 
 After cloning please run npm install to being with to install all required packages.
-To use this project locally please add a .env.development and .env.test file to set the names of your development and test databases respectively. This names can be seen/changed in setup.sql. Set them by writing PGDATABASE=<database_name> in the .env files. 
+To use this project locally please add a ```.env.development``` and ```.env.test``` file to set the names of your development and test databases respectively. This names can be seen/changed in ```setup.sql```. Set them by writing ```PGDATABASE=<database_name>``` in the ```.env``` files. 
 
-Once completed you can create your database by running "npm run setup-dbs" in the terminal. To populate the databases with development data type "npm run seed". 
+Once completed you can create your database by running ```npm run setup-dbs``` in the terminal. To populate the databases with development data type ```npm run seed```. 
 
-If you wish to run tests to make sure everything is setup correctly then use the command "npm run test" (this will also seed your test database with test data for you)
+If you wish to run tests to make sure everything is setup correctly then use the command ```npm run test``` (this will also seed your test database with test data for you)
 
 
 ## **warning**
