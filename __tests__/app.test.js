@@ -468,7 +468,6 @@ describe('QUERIES /api/reviews', () => {
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
-            console.log(reviews)
             expect(reviews.length).toBe(13)
             expect(reviews).toBeSortedBy('votes', {descending: true})
         })
@@ -531,14 +530,23 @@ describe('QUERIES /api/reviews', () => {
             expect(msg).toBe('Invalid sort_by query')
         })
     })
-    test('400: Incorrect category query', () => {
+    test('404: Category queried does not exist', () => {
         return request(app)
         .get('/api/reviews?category=moon_cheese')
-        .expect(400)
+        .expect(404)
         .then(({body}) => {
             const {msg} = body
-            expect(msg).toBe('Invalid order query')
+            expect(msg).toBe('moon cheese does not exist')
         })
+    })
+    test('404: Category exists but no results', () => {
+        return request(app)
+        .get(`/api/reviews?category=children's_games`)
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('No reviews for this category exist')
+                })
     })
 })
 

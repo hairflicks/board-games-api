@@ -27,7 +27,6 @@ function fetchAllReviews(queries) {
 
     if (category) {
         const spaceCategory = category.replaceAll('_', ' ')
-        checkEntityExists('categories', 'slug', spaceCategory)
         sql += `WHERE reviews.category = $1 `
         params.push(spaceCategory)
     }
@@ -46,7 +45,6 @@ function fetchAllReviews(queries) {
 
     if (order) {
         const capitalOrder = order.toUpperCase()
-        console.log(capitalOrder)
         if (capitalOrder != 'DESC' && capitalOrder != 'ASC') {
             return Promise.reject({status:400, msg:'Invalid order query'})
         }else {
@@ -56,16 +54,14 @@ function fetchAllReviews(queries) {
         sql += 'DESC'
     }
 
-    return db.query(sql, params)
-
-
-    // return db.query(`SELECT reviews.*, COUNT(comments.review_id) AS comment_count 
-    // FROM reviews
-    // LEFT JOIN comments ON reviews.review_id = comments.review_id
-    // GROUP BY reviews.review_id
-    // ORDER BY reviews.created_at DESC`)
-    .then(({rows}) => {
-        return rows
+    const promises = [db.query(sql, params), checkEntityExists('categories', 'slug', params[0])]
+    return Promise.all(promises)
+    .then((reviews) => {
+        if (reviews[0].rows.length === 0){
+            return Promise.reject({status:404, msg: 'No reviews for this category exist'})
+        } else {
+        return reviews[0].rows
+        }
     })
 }
 
