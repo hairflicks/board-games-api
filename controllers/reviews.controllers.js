@@ -1,5 +1,5 @@
 
-const {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId} = require('../models/reviews.models')
+const {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId, updateReviewLikes} = require('../models/reviews.models')
 const checkEntityExists = require('../models/utils.model')
 
 
@@ -39,15 +39,20 @@ function getCommentsByReviewId(req, res, next) {
     Promise.all(promises)
     .then(commentList => {
         const comments = commentList[1]
-        if (comments.length === 0) {
-            return Promise.reject({status:200, msg: 'No comments for this review'})
-        } else {
         res.status(200).send({comments})
-        }
     })
     .catch(next)
 }
 
+function patchReviewLikes(req, res, next) {
+    const id = req.params.id
+    const count = req.body.inc_votes
+    updateReviewLikes(id, count)
+    .then((review) => {
+        res.status(200).send({review})
+    })
+    .catch(next)
+}
 
-module.exports = {getReviewById, getAllReviews, getCommentsByReviewId, postCommentByReviewId}
+module.exports = {getReviewById, getAllReviews, getCommentsByReviewId, postCommentByReviewId, patchReviewLikes}
 
