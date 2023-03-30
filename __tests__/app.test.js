@@ -215,6 +215,9 @@ describe('/api/reviews/:id/comments', () => {
         .then(({body}) => {
             const {msg} = body
             expect(msg).toBe('Entity does not exist in database')
+        })
+    })
+})
 
 describe('GET /api/reviews/:id/comments', () => {
     test('200: should have correct keys/values and length', () => {
