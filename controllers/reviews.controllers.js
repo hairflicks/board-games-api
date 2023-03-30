@@ -13,11 +13,12 @@ function getReviewById(req, res, next) {
 }
 
 function getAllReviews(req, res, next) {
-    fetchAllReviews()
+    const queries = req.query
+    fetchAllReviews(queries)
     .then(reviews => {
         res.status(200).send({reviews})
     })
-    .catch(next)
+    .catch((next))
 }
 
 
