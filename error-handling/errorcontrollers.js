@@ -18,6 +18,9 @@ function psqlErrors(err,req,res,next) {
     else if (err.code === '23503') {
         res.status(404).send({msg: 'Entity does not exist in database'})
     }
+    else if (err.code === "23502") {
+        res.status(400).send({msg: "Missing required key/s"})
+    }
     else next(err)
 }
 

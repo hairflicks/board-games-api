@@ -706,6 +706,111 @@ describe('/api/users/:username', () => {
     })
 })
 
+describe('POST /api/reviews', () => {
+    test('201: Responds with comment posted', () => {
+        return request(app)
+        .post('/api/reviews')
+        .send({ title: 'A truly Quacking Game; Quacks of Quedlinburg',
+        designer: 'Wolfgang Warsch',
+        owner: 'mallionaire',
+        review_img_url:
+          'https://images.pexels.com/photos/279321/pexels-photo-279321.jpeg?w=700&h=700',
+        review_body:
+          "Ever wish you could try your hand at mixing potions? Quacks of Quedlinburg will have you mixing up a homebrew like no other. Each player buys different ingredients (chips) that are drawn at random to reach the most points, but watch out, you'd better not let your cauldrom explode.",
+        category: 'social deduction'})
+        .expect(201)
+        .then(({body}) => {
+            const {review} = body
+            expect(review).toMatchObject({
+                title: 'A truly Quacking Game; Quacks of Quedlinburg',
+                designer: 'Wolfgang Warsch',
+                owner: 'mallionaire',
+                review_img_url:
+                  'https://images.pexels.com/photos/279321/pexels-photo-279321.jpeg?w=700&h=700',
+                review_body:
+                  "Ever wish you could try your hand at mixing potions? Quacks of Quedlinburg will have you mixing up a homebrew like no other. Each player buys different ingredients (chips) that are drawn at random to reach the most points, but watch out, you'd better not let your cauldrom explode.",
+                category: 'social deduction',
+                created_at: expect.any(String),
+                votes: 0,
+                review_id: expect.any(Number),
+                comment_count: "0"
+              })
+        })
+    })
+    test('201: review_image_url defaults when not given', () => {
+        return request(app)
+        .post('/api/reviews')
+        .send({ title: 'A truly Quacking Game; Quacks of Quedlinburg',
+        designer: 'Wolfgang Warsch',
+        owner: 'mallionaire',
+        review_body:
+          "Ever wish you could try your hand at mixing potions? Quacks of Quedlinburg will have you mixing up a homebrew like no other. Each player buys different ingredients (chips) that are drawn at random to reach the most points, but watch out, you'd better not let your cauldrom explode.",
+        category: 'social deduction'})
+        .expect(201)
+        .then(({body}) => {
+            const {review} = body
+            expect(review).toMatchObject({
+                title: 'A truly Quacking Game; Quacks of Quedlinburg',
+                designer: 'Wolfgang Warsch',
+                owner: 'mallionaire',
+                review_img_url:
+                'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?w=700&h=700',
+                review_body:
+                  "Ever wish you could try your hand at mixing potions? Quacks of Quedlinburg will have you mixing up a homebrew like no other. Each player buys different ingredients (chips) that are drawn at random to reach the most points, but watch out, you'd better not let your cauldrom explode.",
+                category: 'social deduction',
+                created_at: expect.any(String),
+                votes: 0,
+                review_id: expect.any(Number),
+                comment_count: "0"
+              })
+        })
+    })
+    test('404: given owner does not exist', () => {
+        return request(app)
+        .post('/api/reviews')
+        .send({ title: 'A truly Quacking Game; Quacks of Quedlinburg',
+        designer: 'Wolfgang Warsch',
+        owner: 'beeblebob',
+        review_body:
+          "Ever wish you could try your hand at mixing potions? Quacks of Quedlinburg will have you mixing up a homebrew like no other. Each player buys different ingredients (chips) that are drawn at random to reach the most points, but watch out, you'd better not let your cauldrom explode.",
+        category: 'social deduction'})
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Entity does not exist in database')
+        })
+    })
+    test('404: given category does not exist', () => {
+        return request(app)
+        .post('/api/reviews')
+        .send({ title: 'A truly Quacking Game; Quacks of Quedlinburg',
+        designer: 'Wolfgang Warsch',
+        owner: 'mallionaire',
+        review_body:
+          "Ever wish you could try your hand at mixing potions? Quacks of Quedlinburg will have you mixing up a homebrew like no other. Each player buys different ingredients (chips) that are drawn at random to reach the most points, but watch out, you'd better not let your cauldrom explode.",
+        category: 'condunk'})
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe("Entity does not exist in database")
+        })
+    })
+    test('404: object has missing keys', () => {
+        return request(app)
+        .post('/api/reviews')
+        .send({ 
+        designer: 'Wolfgang Warsch',
+        owner: 'mallionaire',
+        review_body:
+          "Ever wish you could try your hand at mixing potions? Quacks of Quedlinburg will have you mixing up a homebrew like no other. Each player buys different ingredients (chips) that are drawn at random to reach the most points, but watch out, you'd better not let your cauldrom explode.",
+        category: 'social deduction'})
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Missing required key/s')
+        })
+    })
+})
 
 describe('mistyped endpoint', () => {
     test('404: Responds with error message if endpoint is mistyped', () => {
