@@ -1,4 +1,4 @@
-const {fetchAllCategories} = require('../models/categories.model')
+const {fetchAllCategories, placeCategory} = require('../models/categories.model')
 
 
 function getAllCategories(req, res, next) {
@@ -11,4 +11,13 @@ function getAllCategories(req, res, next) {
     })
 }
 
-module.exports = {getAllCategories}
+function postCategory(req, res, next) {
+    const category = req.body
+    placeCategory(category) 
+    .then((category) => {
+        res.status(201).send({category})
+    })
+    .catch(next)
+}
+
+module.exports = {getAllCategories, postCategory}
