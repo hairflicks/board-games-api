@@ -122,6 +122,21 @@ const endpoints = {
       }
     ]
   },
+  "PATCH /api/comments/:id": {
+    "description": "Updates the votes on the corresponding comment id given",
+    "queries": [],
+    "exampleRequest": {
+      "inc_votes": 2
+    },
+    "exampleResponse": {
+      comment_id: 3,
+      body: "I didn't know dogs could play games",
+      votes: 160,
+      author: 'philippaclaire9',
+      review_id: 3,
+      created_at: "2021-01-18T10:09:48.110Z",
+      }
+   },
   "GET /api/users/:username": {
     "description": "Return an object containing the requested user",
     "queries": [],
