@@ -114,5 +114,50 @@ function updateReviewLikes(id, count) {
     }
 }
 
-module.exports = {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId, updateReviewLikes}
+function placeReview(review) {
+    console.log(review)
+    const reqObjectKeys = Object.keys(review)
+    const requiredKeys = ["owner", "title", "body", "designer", "category"]
+    requiredKeys.forEach(key => {
+        console.log(key)
+        if (!key in reqObjectKeys) {
+            return Promise.reject({status: 400, msg: 'Object missing required keys'})
+        }
+    })
+    const params = [review.owner, review.title, review.review_body, review.designer, review.category]
+    let sql = `INSERT INTO reviews (owner, title, review_body, designer, category`
+    console.log(review.review_img_url)
+    if (review.review_img_url) {
+        sql += `, review_img_url) 
+        VALUES ($1,
+            $2,
+            $3,
+            $4,
+            $5,
+            $6) RETURNING *`
+        params.push(review.review_img_url)
+    }else {
+        sql += `) VALUES ($1,
+            $2,
+            $3,
+            $4,
+            $5) RETURNING *` 
+    }
+    return db.query(sql, params)
+    .then((values) => {
+        const id = values.rows[0].review_id
+        console.log(id)
+    return db.query(`SELECT reviews.*, COUNT(comments.review_id) AS comment_count 
+    FROM reviews 
+    LEFT JOIN comments ON reviews.review_id = comments.review_id 
+    WHERE reviews.review_id = ${id} 
+    GROUP BY reviews.review_id`)
+    .then(values => {
+        return values.rows[0]})
+    })
+
+}
+
+
+module.exports = {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId, updateReviewLikes, placeReview}
 

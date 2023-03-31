@@ -18,7 +18,6 @@ function updateCommentVotes(id, count) {
                         WHERE comment_id = $1
                         RETURNING *`, [id,count])
         .then((result) => {
-            console.log(result)
             if (result.rows.length === 0) {
                 return Promise.reject({status: 404, msg: 'Comment_id does not exist'})
             } else {
