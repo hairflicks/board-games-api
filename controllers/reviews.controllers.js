@@ -60,7 +60,6 @@ function patchReviewLikes(req, res, next) {
 
 function postReview(req , res , next) {
     const review = req.body
-    const { owner, category} = review
     placeReview(review)
     .then((review) => {
         res.status(201).send({review})
