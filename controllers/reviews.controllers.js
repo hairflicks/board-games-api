@@ -38,7 +38,8 @@ module.exports = {getReviewById, getAllReviews, postCommentByReviewId}
 
 function getCommentsByReviewId(req, res, next) {
     const id = req.params.id
-    const promises = [checkEntityExists('reviews','review_id', id), fetchCommentByReviewId(id)]
+    const queries = req.query
+    const promises = [checkEntityExists('reviews','review_id', id), fetchCommentByReviewId(id, queries)]
     Promise.all(promises)
     .then(commentList => {
         const comments = commentList[1]

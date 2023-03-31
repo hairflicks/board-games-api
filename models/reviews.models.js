@@ -101,10 +101,25 @@ function placeCommentByReviewId(id, comment) {
     }
 }
 
-function fetchCommentByReviewId(id) {
-    return db.query(`SELECT * FROM comments 
-                    WHERE review_id = $1
-                    ORDER BY created_at desc`, [id])
+function fetchCommentByReviewId(id, queries) {
+    const {limit = 10, p = 1} = queries
+    let sql = `SELECT * FROM comments 
+    WHERE review_id = $1
+    ORDER BY created_at desc`
+
+    if (isNaN(limit) && limit != 'all') {
+        return Promise.reject({status:400, msg:'invalid limit query'})
+    } else {
+        sql += ` LIMIT ${limit}`
+    }
+
+    if (isNaN(p)) {
+        return Promise.reject({status:400, msg:'Invalid page query'})
+    } else if (limit != 'all') {
+        sql += ` OFFSET ${(p - 1) * limit}`
+    }
+
+    return db.query(sql, [id])
     .then((comments) => {
         if (comments.rows.length === 0) {
             return Promise.reject({status:200, msg: 'No comments for this review'})
@@ -133,18 +148,8 @@ function updateReviewLikes(id, count) {
 }
 
 function placeReview(review) {
-    console.log(review)
-    const reqObjectKeys = Object.keys(review)
-    const requiredKeys = ["owner", "title", "body", "designer", "category"]
-    requiredKeys.forEach(key => {
-        console.log(key)
-        if (!key in reqObjectKeys) {
-            return Promise.reject({status: 400, msg: 'Object missing required keys'})
-        }
-    })
     const params = [review.owner, review.title, review.review_body, review.designer, review.category]
     let sql = `INSERT INTO reviews (owner, title, review_body, designer, category`
-    console.log(review.review_img_url)
     if (review.review_img_url) {
         sql += `, review_img_url) 
         VALUES ($1,
@@ -164,7 +169,6 @@ function placeReview(review) {
     return db.query(sql, params)
     .then((values) => {
         const id = values.rows[0].review_id
-        console.log(id)
     return db.query(`SELECT reviews.*, COUNT(comments.review_id) AS comment_count 
     FROM reviews 
     LEFT JOIN comments ON reviews.review_id = comments.review_id 

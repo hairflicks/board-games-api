@@ -53,7 +53,7 @@ const endpoints = {
   }, 
   "GET /api/reviews/:id/comments": {
     "description": "serves an array of all comments associated with the review id sorted by most recent first",
-    "queries": [],
+    "queries": ["limit" , "p"],
     "exampleResponse": {
       "comments": [
         {
@@ -130,12 +130,12 @@ const endpoints = {
       "inc_votes": 2
     },
     "exampleResponse": {
-      comment_id: 3,
-      body: "I didn't know dogs could play games",
-      votes: 160,
-      author: 'philippaclaire9',
-      review_id: 3,
-      created_at: "2021-01-18T10:09:48.110Z",
+      "comment_id": 3,
+      "body": "I didn't know dogs could play games",
+      "votes": 160,
+      "author": 'philippaclaire9',
+      "review_id": 3,
+      "created_at": "2021-01-18T10:09:48.110Z",
       }
    },
   "GET /api/users/:username": {
@@ -151,25 +151,37 @@ const endpoints = {
   "POST /api/reviews": {
     "description": "Posts a new review",
     "queries": [],
-    "exampleRequest": { title: 'A truly Quacking Game; Quacks of Quedlinburg',
-    designer: 'Wolfgang Warsch',
-    owner: 'mallionaire',
-    review_body:
+    "exampleRequest": { "title": 'A truly Quacking Game; Quacks of Quedlinburg',
+    "designer": 'Wolfgang Warsch',
+    "owner": 'mallionaire',
+    "review_body":
       "Ever wish you could try your hand at mixing potions? Quacks of Quedlinburg will have you mixing up a homebrew like no other. Each player buys different ingredients (chips) that are drawn at random to reach the most points, but watch out, you'd better not let your cauldrom explode.",
-    category: 'social deduction'},
+    "category": 'social deduction'},
     "exampleResponse" : {
-      title: 'A truly Quacking Game; Quacks of Quedlinburg',
-      designer: 'Wolfgang Warsch',
-      owner: 'mallionaire',
-      review_img_url:
+      "title": 'A truly Quacking Game; Quacks of Quedlinburg',
+      "designer": 'Wolfgang Warsch',
+      "owner": 'mallionaire',
+      "review_img_url":
       'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?w=700&h=700',
-      review_body:
+      "review_body":
         "Ever wish you could try your hand at mixing potions? Quacks of Quedlinburg will have you mixing up a homebrew like no other. Each player buys different ingredients (chips) that are drawn at random to reach the most points, but watch out, you'd better not let your cauldrom explode.",
-      category: 'social deduction',
-      created_at: "2021-01-18T10:09:48.110Z",
-      votes: 0,
-      review_id: 3,
-      comment_count: "0"
+      "category": 'social deduction',
+      "created_at": "2021-01-18T10:09:48.110Z",
+      "votes": 0,
+      "review_id": 3,
+      "comment_count": "0"
+    }
+  },
+  "POST /api/categories": {
+    "description": "Adds given category to categories table",
+    "queries": [],
+    "exampleRequest": {
+      "slug": "category name",
+      "description": "description of category"
+    },
+    "exampleResponse": {
+      "slug": "category name",
+      "description": "description of category"
     }
   }
 }

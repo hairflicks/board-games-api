@@ -16,7 +16,6 @@ function patchCommentVotes(req, res, next) {
     const count = req.body.inc_votes
     updateCommentVotes(id, count)
     .then(comment => {
-        console.log(comment)
         res.status(200).send({comment})
     })
     .catch(next)

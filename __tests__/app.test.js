@@ -685,7 +685,6 @@ describe('/api/users/:username', () => {
         .get('/api/users/mallionaire')
         .expect(200)
         .then(({body}) => {
-            console.log(body)
             const {user} = body
             expect(user).toMatchObject({
                 username: 'mallionaire',
@@ -895,6 +894,95 @@ describe('Pagination /api/reviews', () => {
         })
     })
 })
+
+describe('pagination /api/reviews/:id/comments', () => {
+    test('200: returns correct limit query', () => {
+        return request(app)
+        .get('/api/reviews/2/comments?limit=2')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body
+            expect(comments.length).toBe(2)
+        })
+    })
+    test('200: returns correct page query', () => {
+        return request(app)
+        .get('/api/reviews/2/comments?limit=2&p=2')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body
+            expect(comments.length).toBe(1)
+        })
+    })
+    test('400: incorrect page query', () => {
+        return request(app)
+        .get('/api/reviews/2/comments?p=dog')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid page query')
+        })
+    })
+    test('400: incorrect limit query', () => {
+        return request(app)
+        .get('/api/reviews/2/comments?limit=cat')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('invalid limit query')
+        })
+    })
+})
+
+describe('POST /api/categories', () => {
+    test('201: responds with category added', () => {
+        return request(app)
+        .post('/api/categories')
+        .send({
+            slug: 'adult',
+            description: 'games for a more mature audience'
+        })
+        .expect(201)
+        .then(({body}) => {
+            const {category} = body
+            expect(category).toMatchObject({
+                    slug: 'adult',
+                    description: 'games for a more mature audience'
+             })
+         })
+    })
+    test('400: missing keys from object', () => {
+        return request(app)
+        .post('/api/categories')
+        .send({
+            slug: 'adult',
+            bloob: 'games for a more mature audience'
+        })
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Missing keys from object')
+         })
+    })
+    test('201: Still adds category if extra keys are present', () => {
+        return request(app)
+        .post('/api/categories')
+        .send({
+            slug: 'adult',
+            description: 'games for a more mature audience',
+            boob: 'not a valid key'
+        })
+        .expect(201)
+        .then(({body}) => {
+            const {category} = body
+            expect(category).toMatchObject({
+                    slug: 'adult',
+                    description: 'games for a more mature audience'
+             })
+         }) 
+    })
+})
+
 
 describe('mistyped endpoint', () => {
     test('404: Responds with error message if endpoint is mistyped', () => {
