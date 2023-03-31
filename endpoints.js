@@ -135,6 +135,16 @@ const endpoints = {
       author: 'philippaclaire9',
       review_id: 3,
       created_at: "2021-01-18T10:09:48.110Z",
+      }
+   },
+  "GET /api/users/:username": {
+    "description": "Return an object containing the requested user",
+    "queries": [],
+    "exampleResponse": {
+      "username": 'mallionaire',
+      "name": 'haz',
+      "avatar_url":
+        'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'
     }
   }
 }

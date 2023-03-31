@@ -679,6 +679,34 @@ describe('PATCH /api/comments/:id', () => {
     })
 })
 
+describe('/api/users/:username', () => {
+    test('200: responds with correct user object', () => {
+        return request(app)
+        .get('/api/users/mallionaire')
+        .expect(200)
+        .then(({body}) => {
+            console.log(body)
+            const {user} = body
+            expect(user).toMatchObject({
+                username: 'mallionaire',
+                name: 'haz',
+                avatar_url:
+                  'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'
+              })
+        })
+    })
+    test('404: requested user does not exist', () => {
+        return request(app)
+        .get('/api/users/beeblebob')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('beeblebob does not exist')
+        })
+    })
+})
+
+
 describe('mistyped endpoint', () => {
     test('404: Responds with error message if endpoint is mistyped', () => {
         return request(app)
