@@ -108,7 +108,7 @@ describe('GET /api/reviews/:id', () => {
 describe('GET /api/reviews', () => {
     test('200: should have length 13', () => {
         return request(app)
-        .get('/api/reviews')
+        .get('/api/reviews?limit=all')
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
@@ -117,7 +117,7 @@ describe('GET /api/reviews', () => {
     })
     test('200: should have valid keys/values', () => {
         return request(app)
-        .get('/api/reviews')
+        .get('/api/reviews?limit=all')
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
@@ -139,7 +139,7 @@ describe('GET /api/reviews', () => {
     })
     test('200: has correct comment count for the reviews', () => {
         return request(app)
-        .get('/api/reviews')
+        .get('/api/reviews?limit=all')
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
@@ -152,7 +152,7 @@ describe('GET /api/reviews', () => {
     })
     test('200: sorted by date (descending)', () => {
         return request(app)
-        .get('/api/reviews')
+        .get('/api/reviews?limit=all')
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
@@ -458,7 +458,7 @@ describe('GET /api/users', () => {
 describe('QUERIES /api/reviews', () => {
     test('200: Responds with reviews only of category queried', () => {
         return request(app)
-        .get('/api/reviews?category=social_deduction')
+        .get('/api/reviews?category=social_deduction&limit=all')
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
@@ -471,7 +471,7 @@ describe('QUERIES /api/reviews', () => {
     })
     test('200: Responds with correct sort_by query', () => {
         return request(app)
-        .get('/api/reviews?sort_by=votes')
+        .get('/api/reviews?sort_by=votes&limit=all')
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
@@ -481,7 +481,7 @@ describe('QUERIES /api/reviews', () => {
     })
     test('200: orders by order query ASC', () => {
         return request(app)
-        .get('/api/reviews?order=asc')
+        .get('/api/reviews?order=asc&limit=all')
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
@@ -491,7 +491,7 @@ describe('QUERIES /api/reviews', () => {
     })
     test('200: Responds with correct order and sort_by query', () => {
         return request(app)
-        .get('/api/reviews?order=asc&sort_by=designer')
+        .get('/api/reviews?order=asc&sort_by=designer&limit=all')
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
@@ -501,7 +501,7 @@ describe('QUERIES /api/reviews', () => {
     })
     test('200: Responds with correct order and category', () => {
         return request(app)
-        .get('/api/reviews?order=asc&category=social_deduction')
+        .get('/api/reviews?order=asc&category=social_deduction&limit=all')
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
@@ -511,7 +511,7 @@ describe('QUERIES /api/reviews', () => {
     })
     test('200: Responds with correct query using all queries', () => {
         return request(app)
-        .get('/api/reviews?order=desc&category=social_deduction&sort_by=votes')
+        .get('/api/reviews?order=desc&category=social_deduction&sort_by=votes&limit=all')
         .expect(200)
         .then(({body}) => {
             const {reviews} = body
@@ -808,6 +808,90 @@ describe('POST /api/reviews', () => {
         .then(({body}) => {
             const {msg} = body
             expect(msg).toBe('Missing required key/s')
+        })
+    })
+})
+
+describe('Pagination /api/reviews', () => {
+    test('200: Limit query returns correct amount', () => {
+        return request(app)
+        .get('/api/reviews?limit=5')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(5)
+        })
+    })
+    test('200: Limit query defaults to 10', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(10)
+        })
+    })
+    test('200: page query goes to specific page', () => {
+        return request(app)
+        .get('/api/reviews?p=2')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews.length).toBe(3)
+        })
+    })
+    test('200: page query combined with limit', () => {
+        return request(app)
+        .get('/api/reviews?p=2&limit=5')
+        .expect(200)
+        .then(({body}) => {
+            const { reviews} = body
+            expect(reviews.length).toBe(5)
+        })
+    })
+    test('200: returns empty array when page is out of bounds', () => {
+        return request(app)
+        .get('/api/reviews?p=4')
+        .expect(200)
+        .then(({body}) => {
+            const {reviews} = body
+            expect(reviews).toEqual([])
+        })
+    })
+    test('200: returns with a total_count property showing total number of results without limits', () => {
+        return request(app)
+        .get('/api/reviews?p=2')
+        .expect(200)
+        .then(({body}) => {
+            const { total_count } = body
+            expect(total_count).toBe(13)
+        })
+    })
+    test('200: returns with a total_count property showing total number of results without limits (more queries)', () => {
+        return request(app)
+        .get('/api/reviews?p=2&limit=4&category=social_deduction')
+        .expect(200)
+        .then(({body}) => {
+            const { total_count } = body
+            expect(total_count).toBe(11)
+        })
+    })
+    test('400: invalid limit query', () => {
+        return request(app)
+        .get('/api/reviews?limit=dog')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('invalid limit query')
+        })
+    })
+    test('400: invalid p query', () => {
+        return request(app)
+        .get('/api/reviews?p=cat')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid page query')
         })
     })
 })

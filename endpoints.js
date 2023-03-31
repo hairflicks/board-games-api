@@ -16,7 +16,7 @@ const endpoints = {
   },
   "GET /api/reviews": {
     "description": "serves an array of all reviews",
-    "queries": ["category", "sort_by", "order"],
+    "queries": ["category", "sort_by", "order", "limit", "p"],
     "exampleResponse": {
       "reviews": [
         {
@@ -29,7 +29,8 @@ const endpoints = {
           "votes": 5,
           "comment_count": '2'
         }
-      ]
+      ],
+      "total_count" : 132
     }
   },
   "GET /api/reviews/:id": {

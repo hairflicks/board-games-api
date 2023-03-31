@@ -21,7 +21,7 @@ function fetchReviewById(id) {
 }
 
 function fetchAllReviews(queries) {
-    const { category, sort_by, order } = queries
+    const { category, sort_by, order, limit = 10 , p = 1 } = queries
     const params = []
     const validSortBy = ['comment_count', 'title', 'designer', 'review_body', 'category', 'votes', 'created_at']
 
@@ -58,10 +58,28 @@ function fetchAllReviews(queries) {
         sql += 'DESC'
     }
 
-    const promises = [db.query(sql, params), checkEntityExists('categories', 'slug', params[0])]
+    if (isNaN(limit) && limit != 'all') {
+        return Promise.reject({status:400, msg:'invalid limit query'})
+    } else {
+        sql += ` LIMIT ${limit}`
+    }
+
+    if (isNaN(p)) {
+        return Promise.reject({status:400, msg:'Invalid page query'})
+    } else if (limit != 'all') {
+        sql += ` OFFSET ${(p - 1) * limit}`
+    }
+
+    let totalCountSql = `SELECT * FROM reviews`
+    if (category) {
+        totalCountSql += ` WHERE category = $1`
+    }
+    const promises = [db.query(sql, params),db.query(totalCountSql, params), checkEntityExists('categories', 'slug', params[0])]
     return Promise.all(promises)
-    .then((reviews) => {
-        return reviews[0].rows
+    .then((results) => {
+        const reviews = results[0].rows
+        const total_count = results[1].rows.length
+        return {reviews, total_count}
     })
 }
 

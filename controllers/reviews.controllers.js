@@ -16,8 +16,9 @@ function getReviewById(req, res, next) {
 function getAllReviews(req, res, next) {
     const queries = req.query
     fetchAllReviews(queries)
-    .then(reviews => {
-        res.status(200).send({reviews})
+    .then(result => {
+        const {reviews, total_count} = result
+        res.status(200).send({reviews, total_count})
     })
     .catch((next))
 }
