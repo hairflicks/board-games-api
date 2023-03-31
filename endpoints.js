@@ -183,6 +183,9 @@ const endpoints = {
       "slug": "category name",
       "description": "description of category"
     }
+  },
+  "DELETE /api/reviews/:id": {
+    "description": "Deletes a review by the given id (no response given)",
   }
 }
 module.exports = endpoints

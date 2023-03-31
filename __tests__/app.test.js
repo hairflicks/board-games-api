@@ -983,6 +983,32 @@ describe('POST /api/categories', () => {
     })
 })
 
+describe('DELETE /api/reviews/:id', () => {
+    test('204: Responds with 204 no content', () => {
+        return request(app)
+        .delete('/api/reviews/2')
+        .expect(204)
+    })
+    test('404: Review id is valid but does not exist', () => {
+        return request(app)
+        .delete('/api/reviews/999')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Review ID does not exist')
+        })
+    })
+    test('400: Review id is invalid', () => {
+        return request(app)
+        .delete('/api/reviews/cat')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe('Invalid request type')
+        })
+    })
+})
+
 
 describe('mistyped endpoint', () => {
     test('404: Responds with error message if endpoint is mistyped', () => {

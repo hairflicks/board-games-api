@@ -180,6 +180,17 @@ function placeReview(review) {
 
 }
 
+function removeReviewById(id) {
+    return db.query(`DELETE FROM reviews
+                    WHERE review_id = $1
+                    RETURNING * `, [id])
+    .then(({rows}) => {
+        if (rows.length === 0) {
+            return Promise.reject({status: 404, msg: 'Review ID does not exist'})
+        }
+    })
+}
 
-module.exports = {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId, updateReviewLikes, placeReview}
+
+module.exports = {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId, updateReviewLikes, placeReview, removeReviewById}
 

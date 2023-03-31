@@ -1,6 +1,6 @@
 
 const res = require('express/lib/response')
-const {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId, updateReviewLikes, placeReview} = require('../models/reviews.models')
+const {fetchReviewById, fetchAllReviews, fetchCommentByReviewId, placeCommentByReviewId, updateReviewLikes, placeReview, removeReviewById} = require('../models/reviews.models')
 const checkEntityExists = require('../models/utils.model')
 
 
@@ -68,5 +68,14 @@ function postReview(req , res , next) {
     .catch(next)
 }
 
-module.exports = {getReviewById, getAllReviews, getCommentsByReviewId, postCommentByReviewId, patchReviewLikes, postReview}
+function deleteReviewById(req, res, next) {
+    const id = req.params.id
+    removeReviewById(id)
+    .then(() => {
+        res.sendStatus(204)
+    })
+    .catch(next)
+}
+
+module.exports = {getReviewById, getAllReviews, getCommentsByReviewId, postCommentByReviewId, patchReviewLikes, postReview, deleteReviewById}
 
