@@ -30,7 +30,7 @@ function fetchAllReviews(queries) {
     LEFT JOIN comments ON reviews.review_id = comments.review_id `
 
     if (category) {
-        const spaceCategory = category.replaceAll('_', ' ')
+        const spaceCategory = category.replace(/\_/g, ' ')
         sql += `WHERE reviews.category = $1 `
         params.push(spaceCategory)
     }
