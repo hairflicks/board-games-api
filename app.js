@@ -2,9 +2,10 @@ const endpoints = require('./endpoints')
 const express = require('express')
 const {serverError,customErrors,psqlErrors} = require('./error-handling/errorcontrollers')
 const { categoriesRouter, commentsRouter, reviewsRouter, usersRouter } = require('./routers/index.js')
-
+const cors = require('cors')
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 
 app.get('/api', (req,res) => {
